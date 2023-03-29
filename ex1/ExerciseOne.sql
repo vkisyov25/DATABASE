@@ -122,3 +122,20 @@ FROM Movies
 WHERE Movies.Year<2000)
 GROUP BY Actors.Address,Actors.Name;
 
+SELECT Movies.Title, Actors.Name
+FROM Actors
+JOIN actor_movies
+ON actor_movies.actor_id = Actors.ID
+JOIN Movies
+ON actor_movies.movie_id = Movies.ID
+JOIN Studios
+ON Movies.studio_id = Studios.ID
+WHERE Studios.Address = "Plovdiv";
+
+
+SELECT movies.Title , studios.Address, producers.Name
+FROM movies
+JOIN producers
+ON movies.producer_id = producers.ID
+JOIN Studios
+ON movies.studio_id = studios.ID
