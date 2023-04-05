@@ -110,7 +110,14 @@ INSERT INTO trackedPeople_freqentlyVisitedPlaces (trackedPeople_id, freqentlyVis
  FROM trackedpeople
  WHERE trackedpeople.family_status = "Single";
  
- 
+  # ще изведем трите имена на проследяваните хора, които са посетили Варна
+ SELECT tp.first_name, tp.father_name, tp.surname
+ FROM trackedpeople tp
+ JOIN trackedpeople_freqentlyvisitedplaces tpfvp
+ ON tpfvp.trackedPeople_id = tp.id
+ JOIN freqentlyvisitedplaces fvp
+ ON tpfvp.freqentlyVisitedPlaces_id = fvp.id
+ WHERE fvp.city = "Varna"
 
 
 
