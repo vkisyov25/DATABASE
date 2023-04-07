@@ -105,19 +105,24 @@ INSERT INTO trackedPeople_freqentlyVisitedPlaces (trackedPeople_id, freqentlyVis
  
  
  
- # ще изведем информация за проследяваните хора, за които family_status = "Single"
+  # ex2 ще изведем информация за проследяваните хора, за които family_status = "Single"
  SELECT *
  FROM trackedpeople
  WHERE trackedpeople.family_status = "Single";
  
-  # ще изведем трите имена на проследяваните хора, които са посетили Варна
+ # ex3 ще изведем колко хора носят обувки с даден номер
+SELECT trackedpeople.shoe_size, COUNT(trackedpeople.id) as count_people
+FROM trackedPeople
+GROUP BY trackedpeople.shoe_size;
+ 
+ # ex4 ще изведем трите имена на проследяваните хора, които са посетили Варна
  SELECT tp.first_name, tp.father_name, tp.surname
  FROM trackedpeople tp
  JOIN trackedpeople_freqentlyvisitedplaces tpfvp
  ON tpfvp.trackedPeople_id = tp.id
  JOIN freqentlyvisitedplaces fvp
  ON tpfvp.freqentlyVisitedPlaces_id = fvp.id
- WHERE fvp.city = "Varna"
+ WHERE fvp.city = "Varna";
 
 
 
