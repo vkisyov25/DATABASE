@@ -146,3 +146,10 @@ WHERE trackedpeople.id IN (
     WHERE place_type = "cafe"
   )
 );
+
+# ex7 ще изведем средното аритметично от прекарано време групирано по семейния статус
+SELECT trackedpeople.family_status, AVG(accuratevisits.time_spent) AS avg_time_spent
+FROM trackedpeople
+JOIN accuratevisits
+ON trackedpeople.id = accuratevisits.trackedPeople_id
+GROUP BY trackedpeople.family_status
