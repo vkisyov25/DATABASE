@@ -66,27 +66,30 @@ VALUES
     ('Amy', 'Thomas', 'Garcia', '5678901234', '852 Cherry St.', 'amy.thomas@example.com', '555-1112', 'Single', 'Mazda CX-5', 8.0, 'S');
 
 INSERT INTO accurateVisits (data_time, time_spent, isAlone, with_person, trackedPeople_id) 
-VALUES ('2022-02-14 10:30:00', 60, true, NULL, 1),
+VALUES ('2022-02-14 10:30:00', 40, true, NULL, 1),
 ('2022-03-02 14:00:00', 45, false, 'Sarah', 2),
-('2022-03-15 16:20:00', 30, true, NULL, 3),
+('2022-03-15 16:20:00', 20, true, NULL, 3),
 ('2022-03-20 12:10:00', 120, false, 'Michael', 4),
 ('2022-04-01 19:30:00', 90, true, NULL, 5),
 ('2022-04-05 11:45:00', 60, false, 'Emily', 6),
 ('2022-04-10 16:15:00', 75, true, NULL, 7),
 ('2022-04-18 14:00:00', 30, false, 'David', 8),
 ('2022-05-01 13:20:00', 45, true, NULL, 9),
-('2022-05-15 17:50:00', 60, true, NULL, 10);
+('2022-05-15 17:50:00', 60, true, NULL, 10),
+('2022-05-15 17:50:00', 60, true, NULL, 5),
+('2022-05-15 17:50:00', 60, true, NULL, 7),
+('2022-05-15 17:50:00', 60, true, NULL, 8);
  
 INSERT INTO freqentlyVisitedPlaces(country, city, address, gps_cordinates, place_type, accurateVisits_id) VALUES
 ('Bulgaria', 'Sofia', 'ul. "Solunska" 52', '42.6975, 23.3219', 'cafe', 1),
 ('USA', 'New York', '4th St. and Lafayette St.', '40.7256, -73.9966', 'restaurant', 2),
 ('Spain', 'Barcelona', 'Plaça dels Àngels, 1', '41.3853, 2.1671', 'library', 3),
-('Bulgaria', 'Plovdiv', 'ul. "Knyaz Aleksandar I" 38', '42.1425, 24.7499', 'bar', 4),
+('Bulgaria', 'Varna', 'ul. "Knyaz Aleksandar I" 38', '42.1425, 24.7499', 'bar', 4),
 ('UK', 'London', '11-13 Holland St, Kensington', '51.4980, -0.1937', 'pub', 5),
 ('Bulgaria', 'Varna', 'ul. "Patriarh Evtimiy" 28', '43.2128, 27.9251', 'restaurant', 6),
 ('USA', 'Los Angeles', '515 W 7th St', '34.0485, -118.2568', 'cafe', 7),
 ('Italy', 'Rome', 'Piazza di Trevi, 00187 Roma RM', '41.9009, 12.4833', 'restaurant', 8),
-('Bulgaria', 'Burgas', 'ul. "Alexandrovska" 82', '42.5084, 27.4714', 'cafe', 9),
+('Bulgaria', 'Varna', 'ul. "Alexandrovska" 82', '42.5084, 27.4714', 'cafe', 9),
 ('France', 'Paris', '1 Rue de la Légion d''Honneur, 75007 Paris', '48.8638, 2.3125', 'library', 10);
 
     
