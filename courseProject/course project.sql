@@ -127,6 +127,11 @@ GROUP BY trackedpeople.shoe_size;
  ON tpfvp.freqentlyVisitedPlaces_id = fvp.id
  WHERE fvp.city = "Varna";
 
-
+# ex5 ще напишем заявка, с която ще изведем общата информация за двете таблици – freqentlyVisitedPlaces и accurateVisits.
+# Тъи като използваме RIGHT JOIN ще изведем цялата информация за таблица accurateVisits
+SELECT *
+FROM freqentlyVisitedPlaces F
+RIGHT JOIN accurateVisits A
+ON F.accurateVisits_id = A.id;
 
  
