@@ -134,4 +134,15 @@ FROM freqentlyVisitedPlaces F
 RIGHT JOIN accurateVisits A
 ON F.accurateVisits_id = A.id;
 
- 
+# ex6 ще изведем трите имена само на тези хора, на които place_type = "cafe"
+SELECT trackedpeople.first_name, trackedpeople.father_name, trackedpeople.surname
+FROM trackedPeople
+WHERE trackedpeople.id IN (
+  SELECT trackedPeople_id
+  FROM trackedPeople_freqentlyVisitedPlaces
+  WHERE freqentlyVisitedPlaces_id IN (
+    SELECT id
+    FROM freqentlyVisitedPlaces
+    WHERE place_type = "cafe"
+  )
+);
