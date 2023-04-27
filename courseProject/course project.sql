@@ -1,4 +1,5 @@
 
+
 DROP database if exists followingPeople;
 CREATE  DATABASE followingPeople;
 USE followingPeople;
@@ -108,7 +109,7 @@ INSERT INTO trackedPeople_freqentlyVisitedPlaces (trackedPeople_id, freqentlyVis
  
  
  
-  # ex2 ще изведем информация за проследяваните хора, за които family_status = "Single"
+ # ex2 ще изведем информация за проследяваните хора, за които family_status = "Single"
  SELECT *
  FROM trackedpeople
  WHERE trackedpeople.family_status = "Single";
@@ -119,20 +120,22 @@ FROM trackedPeople
 GROUP BY trackedpeople.shoe_size;
  
  # ex4 ще изведем трите имена на проследяваните хора, които са посетили Варна
- SELECT tp.first_name, tp.father_name, tp.surname
+ SELECT tp.first_name, tp.father_name, tp.surname,fvp.city
  FROM trackedpeople tp
  JOIN trackedpeople_freqentlyvisitedplaces tpfvp
  ON tpfvp.trackedPeople_id = tp.id
  JOIN freqentlyvisitedplaces fvp
  ON tpfvp.freqentlyVisitedPlaces_id = fvp.id
  WHERE fvp.city = "Varna";
-
+ 
 # ex5 ще напишем заявка, с която ще изведем общата информация за двете таблици – freqentlyVisitedPlaces и accurateVisits.
-# Тъи като използваме RIGHT JOIN ще изведем цялата информация за таблица accurateVisits
+# Тъи като използваме RIGHT JOIN освен общата информация между таблиците freqentlyVisitedPlaces и accurateVisitс ще изведем  и цялата информация от таблица accurateVisits
 SELECT *
 FROM freqentlyVisitedPlaces F
 RIGHT JOIN accurateVisits A
 ON F.accurateVisits_id = A.id;
+
+
 
 # ex6 ще изведем трите имена само на тези хора, на които place_type = "cafe"
 SELECT trackedpeople.first_name, trackedpeople.father_name, trackedpeople.surname
@@ -147,9 +150,85 @@ WHERE trackedpeople.id IN (
   )
 );
 
+
 # ex7 ще изведем средното аритметично от прекарано време групирано по семейния статус
 SELECT trackedpeople.family_status, AVG(accuratevisits.time_spent) AS avg_time_spent
 FROM trackedpeople
 JOIN accuratevisits
 ON trackedpeople.id = accuratevisits.trackedPeople_id
-GROUP BY trackedpeople.family_status
+GROUP BY trackedpeople.family_status;
+
+#ex8 ще създадем тригер, който прави лог на всички променливи. Тригерът ще се изпълнява след командата INSERT.
+     #create table
+drop table trackedPeople_log;
+CREATE TABLE trackedPeople_log(
+OLD_first_name VARCHAR(50),
+NEW_first_name VARCHAR(50),
+OLD_father_name VARCHAR(50),
+NEW_father_name VARCHAR(50),
+OLD_surname VARCHAR(50),
+NEW_surname VARCHAR(50),
+OLD_egn varchar(10),
+NEW_egn varchar(10),
+OLD_address VARCHAR(55),
+NEW_address VARCHAR(55),
+OLD_email VARCHAR(55),
+NEW_email VARCHAR(55),
+OLD_phone VARCHAR(50),
+NEW_phone VARCHAR(50),
+OLD_family_status VARCHAR(50),
+NEW_family_status VARCHAR(50),
+OLD_car VARCHAR(50),
+NEW_car VARCHAR(50),
+OLD_shoe_size DOUBLE,
+NEW_shoe_size DOUBLE,
+OLD_clothing_size VARCHAR(7),
+NEW_clothing_size VARCHAR(7)
+);
+   #create trigger
+delimiter |
+CREATE TRIGGER trackedPeopleTriger AFTER INSERT ON trackedPeople
+FOR EACH ROW
+BEGIN
+INSERT INTO trackedPeople_log(
+OLD_first_name,
+NEW_first_name,
+OLD_father_name,
+NEW_father_name,
+OLD_surname ,
+NEW_surname ,
+OLD_egn ,
+NEW_egn ,
+OLD_address ,
+NEW_address ,
+OLD_email ,
+NEW_email ,
+OLD_phone ,
+NEW_phone ,
+OLD_family_status ,
+NEW_family_status ,
+OLD_car ,
+NEW_car ,
+OLD_shoe_size ,
+NEW_shoe_size ,
+OLD_clothing_size ,
+NEW_clothing_size 
+)
+VALUES ('INSERT',
+NEW.first_name, NEW.father_name,NEW.surname,NEW.egn, NEW.address,NEW.email, NEW.phone ,NEW.family_status,NEW.car ,NEW.shoe_size ,NEW.clothing_size,
+NOW());
+END;
+|
+Delimiter ;
+
+
+INSERT INTO trackedPeople_log()
+values('Amy', 'Ventsislav', 'Thomas', 'Cankov', 'Garcia', 'Kisyov', '5678901234','0230506450','852 Cherry St.', 'Panayot Hitov',
+'amy.thomas@example.com', 'vkisyov@example.com','555-1112', '0605-1112','Single', 'Single','Mazda CX-5', 'Ce klasa', 8.0, 9.0, 'S','M');
+
+
+ 
+
+
+
+ 
