@@ -1,5 +1,4 @@
 
-
 DROP database if exists followingPeople;
 CREATE  DATABASE followingPeople;
 USE followingPeople;
@@ -227,7 +226,65 @@ values('Amy', 'Ventsislav', 'Thomas', 'Cankov', 'Garcia', 'Kisyov', '5678901234'
 'amy.thomas@example.com', 'vkisyov@example.com','555-1112', '0605-1112','Single', 'Single','Mazda CX-5', 'Ce klasa', 8.0, 9.0, 'S','M');
 
 
- 
+#ex9 - Ще създадем процедура, която извежда точните посещенията на всеки един човек.
+/**Първоначално създаваме процедурата и определяме курсора cursorPerson, който ще използваме за обхождане на всички записи в таблицата trackedPeople. Създаваме също обработчик на грешки CONTINUE HANDLER за случая, когато няма повече редове за четене.
+
+Създаваме временна таблица results, която ще използваме за запазване на резултатите.
+
+Отваряме курсора и обхождаме всички записи в таблицата trackedPeople в цикъл read_loop. За всяка записка извличаме id и името на човека (first_name, father_name, surname) и използваме CONCAT_WS за да ги комбинираме в едно.
+
+След това използваме SELECT COUNT() за да изчислим броя на записите в таблицата accurateVisits, които съответстват на даден човек, и записваме резултата в променливата visits_count.
+
+Накрая вмъкваме резултата във временната таблица results.
+
+След като завършим обхождането на таблицата trackedPeople, затваряме курсора и използваме SELECT за да върнем всички записи от временната таблица results.
+
+За да изпълним процедурата, използваме командата CALL track_visits();**/
+
+DROP PROCEDURE IF EXISTS track_visits;
+
+DELIMITER $$
+CREATE PROCEDURE track_visits()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE person_id INT;
+    DECLARE person_name VARCHAR(150);
+    DECLARE visits_count INT DEFAULT 0;
+
+    DECLARE cursorPerson CURSOR FOR 
+    SELECT id, CONCAT_WS(' ', first_name, father_name, surname) AS full_name 
+    FROM trackedPeople;
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    DROP TABLE IF EXISTS results;
+    CREATE TEMPORARY TABLE results (person_name VARCHAR(150), visits_count INT);
+
+    OPEN cursorPerson;
+
+    read_loop: LOOP
+        FETCH cursorPerson INTO person_id, person_name;
+        
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SELECT COUNT(*) INTO visits_count 
+        FROM accurateVisits 
+        WHERE trackedPeople_id = person_id;
+
+        INSERT INTO results VALUES (person_name, visits_count);
+        
+    END LOOP;
+
+    CLOSE cursorPerson;
+
+    SELECT * FROM results;
+END $$
+DELIMITER ;
+
+CALL track_visits();
+
 
 
 
