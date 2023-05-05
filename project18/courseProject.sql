@@ -152,4 +152,52 @@ FROM clients AS c
 JOIN orders AS o
 ON c.id = o.clients_id
 GROUP BY c.id
-ORDER BY total_price DESC;       
+ORDER BY total_price DESC;
+
+#ex8 - ще създадем тригер, който прави лог на всички променливи за таблица Orders. Тригерът ще се изпълнява след командата INSERT.
+   #create table
+CREATE TABLE orders_log(
+old_price DOUBLE,
+new_price DOUBLE,
+old_pick_up_time DATETIME,
+new_pick_up_time DATETIME,
+old_wash_type ENUM("color","white","wool"),
+new_wash_type ENUM("color","white","wool"),
+old_wash_duration ENUM ("short", "long"),
+new_wash_duration ENUM ("short", "long")
+);
+
+  #create trigger
+DROP TRIGGER IF EXISTS ordersTriger;
+delimiter |
+CREATE TRIGGER ordersTriger AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+INSERT INTO orders_log(
+old_price,
+new_price,
+old_pick_up_time,
+new_pick_up_time,
+old_wash_type,
+new_wash_type,
+old_wash_duration,
+new_wash_duration 
+)
+VALUES (
+OLD.price,
+if(OLD.price = NEW.price, NULL, NEW.price),
+OLD.pick_up_time,
+if(OLD.pick_up_time = NEW.pick_up_time, NULL, NEW.pick_up_time),
+OLD.wash_type,
+if(OLD.wash_type = NEW.wash_type, NULL, NEW.wash_type),
+OLD.wash_duration,
+if(OLD.wash_duration = NEW.wash_duration, NULL, NEW.wash_duration)
+);
+END;
+|
+Delimiter ;
+
+UPDATE `laundry`.`orders` SET `price` = '30',`pick_up_time` = '2023-05-05 16:00:00', `wash_type` = 'white', `wash_duration` = 'long', `washing_machines_id` = '3' 
+WHERE (`id` = '1');
+
+SELECT * FROM orders_log;       
