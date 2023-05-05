@@ -124,3 +124,10 @@ INSERT INTO Orders (price, pick_up_time, wash_type, wash_duration, clients_id, w
  JOIN Orders
  ON clients.id=orders.clients_id
  WHERE wash_type="color";
+ 
+ #ex5 -ще напишем заявка, с която ще изведем общата информация за двете таблици – Clients и Orders. 
+ #Тъи като използваме LEFT JOIN ще изведем цялата информация за таблица Clients.
+ SELECT * 
+ FROM Clients 
+ LEFT JOIN Orders 
+ ON orders.clients_id = Clients.id;
