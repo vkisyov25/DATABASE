@@ -117,3 +117,10 @@ INSERT INTO Orders (price, pick_up_time, wash_type, wash_duration, clients_id, w
  SELECT Orders.wash_type, SUM(orders.price) AS allSUM
  FROM Orders
  GROUP BY Orders.wash_type;
+ 
+ #ex4 - ще изведем имената и телефонните номера на клиентите, на които wash_type = color 
+ SELECT clients.name, clients.phone_number, orders.wash_type
+ FROM Clients 
+ JOIN Orders
+ ON clients.id=orders.clients_id
+ WHERE wash_type="color";
