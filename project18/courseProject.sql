@@ -142,3 +142,14 @@ INSERT INTO Orders (price, pick_up_time, wash_type, wash_duration, clients_id, w
     (SELECT wm.id
        FROM ORDERS
 	   WHERE wm.id = c.id);
+       
+#ex7 - извежда името и телефонния номер на клиента,
+#  колко поръчки е направил и общата им цена
+SELECT c.name, c.phone_number, 
+count(*)  AS orders_count,
+sum(o.price) AS total_price
+FROM clients AS c
+JOIN orders AS o
+ON c.id = o.clients_id
+GROUP BY c.id
+ORDER BY total_price DESC;       
