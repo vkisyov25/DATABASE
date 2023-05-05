@@ -131,3 +131,14 @@ INSERT INTO Orders (price, pick_up_time, wash_type, wash_duration, clients_id, w
  FROM Clients 
  LEFT JOIN Orders 
  ON orders.clients_id = Clients.id;
+ 
+ #ex6-  ще изведем  името и тел. номер на клиента
+ # и съответно неговите дрехи в коя пералня се перат
+ # като за пералнята се извежда id и марката ѝ
+ SELECT c.name, c.phone_number, wm.id, wm.brand
+ FROM clients AS c
+ JOIN washing_machines AS wm
+ ON c.id IN 
+    (SELECT wm.id
+       FROM ORDERS
+	   WHERE wm.id = c.id);
