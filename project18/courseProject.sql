@@ -112,3 +112,8 @@ INSERT INTO Orders (price, pick_up_time, wash_type, wash_duration, clients_id, w
   SELECT * 
   FROM clients
   WHERE clients.name = "John Doe";
+  
+ #ex3- ще изведем общата сума за съответен тип пране 
+ SELECT Orders.wash_type, SUM(orders.price) AS allSUM
+ FROM Orders
+ GROUP BY Orders.wash_type;
