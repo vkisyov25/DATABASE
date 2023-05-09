@@ -157,89 +157,65 @@ JOIN accuratevisits
 ON trackedpeople.id = accuratevisits.trackedPeople_id
 GROUP BY trackedpeople.family_status;
 
-#ex8 ще създадем тригер, който прави лог на всички променливи. Тригерът ще се изпълнява след командата INSERT.
+#ex8 ще създадем тригер, който прави лог на всички променливи за таблица trackedPeople. Тригерът ще се изпълнява след командата INSERT. 
      #create table
-drop table trackedPeople_log;
+drop table if exists trackedPeople_log;
 CREATE TABLE trackedPeople_log(
-OLD_first_name VARCHAR(50),
 NEW_first_name VARCHAR(50),
-OLD_father_name VARCHAR(50),
 NEW_father_name VARCHAR(50),
-OLD_surname VARCHAR(50),
 NEW_surname VARCHAR(50),
-OLD_egn varchar(10),
 NEW_egn varchar(10),
-OLD_address VARCHAR(55),
 NEW_address VARCHAR(55),
-OLD_email VARCHAR(55),
 NEW_email VARCHAR(55),
-OLD_phone VARCHAR(50),
 NEW_phone VARCHAR(50),
-OLD_family_status VARCHAR(50),
 NEW_family_status VARCHAR(50),
-OLD_car VARCHAR(50),
 NEW_car VARCHAR(50),
-OLD_shoe_size DOUBLE,
 NEW_shoe_size DOUBLE,
-OLD_clothing_size VARCHAR(7),
 NEW_clothing_size VARCHAR(7)
 );
    #create trigger
+drop trigger if exists trackedPeopleTriger;
 delimiter |
 CREATE TRIGGER trackedPeopleTriger AFTER INSERT ON trackedPeople
 FOR EACH ROW
 BEGIN
 INSERT INTO trackedPeople_log(
-OLD_first_name,
 NEW_first_name,
-OLD_father_name,
 NEW_father_name,
-OLD_surname ,
 NEW_surname ,
-OLD_egn ,
 NEW_egn ,
-OLD_address ,
 NEW_address ,
-OLD_email ,
 NEW_email ,
-OLD_phone ,
 NEW_phone ,
-OLD_family_status ,
 NEW_family_status ,
-OLD_car ,
 NEW_car ,
-OLD_shoe_size ,
 NEW_shoe_size ,
-OLD_clothing_size ,
 NEW_clothing_size 
 )
 VALUES ('INSERT',
-NEW.first_name, NEW.father_name,NEW.surname,NEW.egn, NEW.address,NEW.email, NEW.phone ,NEW.family_status,NEW.car ,NEW.shoe_size ,NEW.clothing_size,
-NOW());
+NEW.first_name, NEW.father_name,NEW.surname,NEW.egn, NEW.address,NEW.email, NEW.phone ,NEW.family_status,NEW.car ,NEW.shoe_size ,NEW.clothing_size);
 END;
 |
 Delimiter ;
 
 
 INSERT INTO trackedPeople_log()
-values('Amy', 'Ventsislav', 'Thomas', 'Cankov', 'Garcia', 'Kisyov', '5678901234','0230506450','852 Cherry St.', 'Panayot Hitov',
-'amy.thomas@example.com', 'vkisyov@example.com','555-1112', '0605-1112','Single', 'Single','Mazda CX-5', 'Ce klasa', 8.0, 9.0, 'S','M');
+values('Ventsislav','Tsankov','Kisyov','0230506450', 'Panayot Hitov','vkisyov@example.com', '0605-1112','Single','G class',9.0, 'S');
+
+SELECT * FROM trackedpeople_log;
 
 
 #ex9 - Ще създадем процедура, която извежда точните посещенията на всеки един човек.
-/**Първоначално създаваме процедурата и определяме курсора cursorPerson, който ще използваме за обхождане на всички записи в таблицата trackedPeople. Създаваме също обработчик на грешки CONTINUE HANDLER за случая, когато няма повече редове за четене.
-
+/**Първоначално създаваме процедурата и определяме курсора cursorPerson, който ще използваме за обхождане на всички записи в таблицата trackedPeople.
+Създаваме също обработчик на грешки CONTINUE HANDLER за случая, когато няма повече редове за четене.
 Създаваме временна таблица results, която ще използваме за запазване на резултатите.
-
 Отваряме курсора и обхождаме всички записи в таблицата trackedPeople в цикъл read_loop. За всяка записка извличаме id и името на човека (first_name, father_name, surname) и използваме CONCAT_WS за да ги комбинираме в едно.
-
 След това използваме SELECT COUNT() за да изчислим броя на записите в таблицата accurateVisits, които съответстват на даден човек, и записваме резултата в променливата visits_count.
-
 Накрая вмъкваме резултата във временната таблица results.
-
 След като завършим обхождането на таблицата trackedPeople, затваряме курсора и използваме SELECT за да върнем всички записи от временната таблица results.
-
 За да изпълним процедурата, използваме командата CALL track_visits();**/
+
+
 
 DROP PROCEDURE IF EXISTS track_visits;
 
@@ -258,7 +234,9 @@ BEGIN
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     DROP TABLE IF EXISTS results;
-    CREATE TEMPORARY TABLE results (person_name VARCHAR(150), visits_count INT);
+    CREATE TEMPORARY TABLE results(
+    person_name VARCHAR(150), 
+    visits_count INT);
 
     OPEN cursorPerson;
 
@@ -287,5 +265,7 @@ CALL track_visits();
 
 
 
+
+-- case new.id when old.id then null else new.id end);
 
  
