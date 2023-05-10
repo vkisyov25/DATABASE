@@ -80,8 +80,7 @@ CALL ex5(1, 5, 123);
 
 SELECT * FROM customer_accounts;
 
-				/*6*/
-# В ПРОЦЕДУРА ТРАНСАКЦИЯ ЗАДЪЛЖИТЕЛНО ЗАПОЧВА СЪС START
+ #В ПРОЦЕДУРА ТРАНСАКЦИЯ ЗАДЪЛЖИТЕЛНО ЗАПОЧВА СЪС START
 DROP PROCEDURE IF EXISTS ex6;
 DELIMITER |
 CREATE PROCEDURE ex6(sub_name VARCHAR(255), add_name VARCHAR(255), 
@@ -100,4 +99,47 @@ WHERE customers.name = sub_name
 AND  customer_accounts.currency = currency;
 
 SELECT customer_accounts.id
+INTO @account_add_id
+FROM customers
+JOIN customer_accounts 
+ON customers.id = customer_accounts.customer_id
+WHERE customers.name = add_name
+AND  customer_accounts.currency = currency;
+	
+START TRANSACTION ;
+UPDATE customer_accounts
+SET customer_accounts.amount = customer_accounts.amount-amount
+WHERE customer_accounts.id = @account_sub_id;
+SET @rows_affected = @rows_affected + ROW_COUNT();
+
+UPDATE customer_accounts
+SET customer_accounts.amount = customer_accounts.amount+amount
+WHERE customer_accounts.id = @account_add_id;
+SET @rows_affected = @rows_affected + ROW_COUNT();
+
+IF(@rows_affected != 2)
+	THEN 
+			
+		SELECT row_count();
+		ROLLBACK ;
+		LEAVE ex6;
+    ELSE 
+		SELECT "TRANSACTION COMPLETE";
+		COMMIT ;
+END IF;
+END;
+|
+DELIMITER ;
+
+CALL ex6('Ivan Petrov Iordanov', 'Stoyan Pavlov Pavlov', "BGN",123);
+
+select * from customer_accounts;
+select * from customers;
+
+SELECT customers.name, customer_accounts.customer_id, customer_accounts.id
+FROM customers
+JOIN customer_accounts
+ON customers.id = customer_accounts.customer_id
+
+
 
