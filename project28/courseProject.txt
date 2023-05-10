@@ -1,0 +1,430 @@
+DROP DATABASE IF EXISTS University;
+CREATE DATABASE University;
+USE  University;
+
+
+CREATE TABLE departments (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+)ENGINE = InnoDB;
+
+CREATE TABLE majors (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    major_type ENUM("BACHELOR'S", "MASTER'S", "DOCTOR's") NOT NULL,
+    number_of_semesters INT NOT NULL,
+    department_id INT NOT NULL,
+    CONSTRAINT FOREIGN KEY (department_id)
+		REFERENCES departments(id)
+)ENGINE = InnoDB;
+
+CREATE TABLE semesters (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    semester_number INT NOT NULL,
+    academic_year YEAR NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL
+)ENGINE = InnoDB;
+
+
+CREATE TABLE students (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    father_name VARCHAR (255) NOT NULL,
+    family_name VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+	password VARCHAR(255) NOT NULL,
+    fac_no VARCHAR(10) NOT NULL UNIQUE,
+    egn varchar(10) NOT NULL UNIQUE,
+    date_of_birth DATE,
+    phone_number VARCHAR(10) NOT NULL UNIQUE,
+    email VARCHAR (255),
+    major_id INT NOT NULL,
+    semester_id INT NOT NULL,
+    CONSTRAINT FOREIGN KEY (major_id)
+		REFERENCES majors(id),
+     CONSTRAINT FOREIGN KEY (semester_id)
+		REFERENCES semesters(id)
+)ENGINE = InnoDB;
+
+
+CREATE TABLE courses (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    semester INT NOT NULL,
+    max_credits INT NOT NULL
+)ENGINE = InnoDB;
+
+CREATE TABLE student_courses (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    grade ENUM( '2', '3', '4', '5', '6') NOT NULL DEFAULT "2",
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+	student_credits INT DEFAULT NULL,
+    CONSTRAINT FOREIGN KEY (student_id)
+        REFERENCES students (id),
+    CONSTRAINT FOREIGN KEY (course_id)
+        REFERENCES courses (id)
+)ENGINE = InnoDB;
+
+
+CREATE TABLE teachers (
+    id INT NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(255) NOT NULL,
+    family_name VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(10),
+    email VARCHAR(255),
+    PRIMARY KEY (id)
+)ENGINE = InnoDB;
+
+
+CREATE TABLE teacher_courses (
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    teacher_id INT NOT NULL,
+    course_id INT NOT NULL,
+    CONSTRAINT FOREIGN KEY (teacher_id)
+        REFERENCES teachers (id),
+    CONSTRAINT FOREIGN KEY (course_id)
+        REFERENCES courses (id)
+)ENGINE = InnoDB;
+
+CREATE TABLE log_msg(
+id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+msg_type ENUM("INFO", "WARNING", "ERROR", "SEVERE"),
+msg TEXT,
+date_time DATETIME
+)ENGINE = InnoDB;
+
+INSERT INTO departments (name) VALUES
+('Sales'),
+('Marketing'),
+('Engineering'),
+('Finance'),
+('Human Resources'),
+('Customer Support'),
+('Product Management'),
+('Information Technology'),
+('Operations'),
+('Research and Development');
+
+INSERT INTO majors (name, major_type,  number_of_semesters, department_id) VALUES
+('Computer Science', 'BACHELOR\'S',8 , 3),
+('Mechanical Engineering', 'BACHELOR\'S', 8, 3),
+('Marketing', 'BACHELOR\'S', 8,2),
+('Business Administration', 'MASTER\'S',3, 4),
+('Information Systems', 'MASTER\'S',4, 8),
+('English Literature', 'BACHELOR\'S',8,10),
+('Psychology', 'BACHELOR\'S', 8,1),
+('Environmental Science', 'DOCTOR\'S',3,5),
+('Nursing', 'BACHELOR\'S',8,6),
+('Mathematics', 'BACHELOR\'S', 8,3);
+
+INSERT INTO semesters (semester_number, academic_year, start_date, end_date) VALUES
+(1, 2022, '2022-09-05', '2022-12-16'),
+(2, 2023, '2023-01-09', '2023-04-28'),
+(3, 2023, '2023-05-15', '2023-08-25'),
+(1, 2023, '2023-09-04', '2023-12-15'),
+(2, 2024, '2024-01-08', '2024-04-26'),
+(3, 2024, '2024-05-13', '2024-08-23'),
+(1, 2024, '2024-09-02', '2024-12-13'),
+(2, 2025, '2025-01-06', '2025-04-25'),
+(3, 2025, '2025-05-12', '2025-08-22'),
+(1, 2025, '2025-09-01', '2025-12-12');
+
+INSERT INTO students (first_name, father_name, family_name, username, password, fac_no, egn, date_of_birth, phone_number, email, major_id, semester_id) VALUES
+('John', 'Doe', 'Smith', 'jdoe', 'password1', '1234567890', '023123221', '1998-01-01', '5551234', 'jdoe@example.com', 1, 1),
+('Jane', 'Doe', 'Miller', 'jane.doe', 'password2', '2345678901', '0234567801', '1999-02-02', '5552345', 'jane.doe@example.com', 2, 1),
+('Bob', 'Johnson', 'Brown', 'bobj', 'password3', '3456789012', '3456789012', '2000-03-03', '5553456', 'bobj@example.com', 3, 2),
+('Emily', 'Garcia', 'Davis', 'emily.garcia', 'password4', '021457261', '4567890123', '2001-04-04', '5554567', 'emily.garcia@example.com', 4, 2),
+('Michael', 'Smith', 'Wilson', 'msmith', 'password5', '5678901234', '5678901234', '2002-05-05', '5555678', 'msmith@example.com', 5, 3),
+('Maria', 'Martinez', 'Gonzalez', 'mariam', 'password6', '6789012345', '6789012345', '2003-06-06', '5556789', 'mariam@example.com', 6, 3),
+('David', 'Brown', 'Jones', 'dbrown', 'password7', '7890123456', '7890123456', '2004-07-07', '5557890', 'dbrown@example.com', 7, 1),
+('Samantha', 'Wilson', 'Clark', 'swilson', 'password8', '8901234567', '8901234567', '2005-08-08', '5558901', 'swilson@example.com', 8, 2),
+('William', 'Taylor', 'Scott', 'wtaylor', 'password9', '9012345678', '9012345678', '2006-09-09', '5559012', 'wtaylor@example.com', 9, 3),
+('Olivia', 'Anderson', 'Turner', 'oanderson', 'password10', '0123456789', '0123456789', '2007-10-10', '5550123', 'oanderson@example.com', 10, 1);
+
+
+INSERT INTO courses (name, description, semester, max_credits) VALUES
+('Introduction to Computer Science', 'This course provides an introduction to the field of computer science, including basic programming concepts and algorithms.', 1, 4),
+('Database Systems', 'This course covers the design and implementation of database systems, including relational databases and SQL.', 2, 3),
+('Software Engineering', 'This course covers the principles and practices of software engineering, including software design, testing, and project management.', 3, 4),
+('Data Structures and Algorithms', 'This course covers data structures and algorithms commonly used in computer science, including arrays, linked lists, trees, and graphs.', 1, 4),
+('Operating Systems', 'This course covers the principles and implementation of operating systems, including process management, memory management, and file systems.', 2, 3),
+('Computer Networks', 'This course covers the principles of computer networks, including network architectures, protocols, and security.', 3, 4),
+('Artificial Intelligence', 'This course covers the principles and techniques of artificial intelligence, including search algorithms, machine learning, and natural language processing.', 1, 4),
+('Computer Graphics', 'This course covers the principles and techniques of computer graphics, including 2D and 3D graphics, rendering, and animation.', 2, 3),
+('Web Development', 'This course covers the design and implementation of web applications, including HTML, CSS, JavaScript, and server-side programming.', 3, 4),
+('Human-Computer Interaction', 'This course covers the principles of human-computer interaction, including user interface design, usability testing, and user experience.', 1, 4);
+
+INSERT INTO student_courses (grade, student_id, course_id) VALUES
+('3', 1, 2),
+('4', 1, 1),
+('6', 1, 3),
+('5', 2, 4),
+('4', 2, 5),
+('2', 6, 6),
+('3', 7, 7),
+('5', 8, 8),
+('6', 9, 9),
+('4', 10, 10);
+
+INSERT INTO teachers (first_name, family_name, phone_number, email) VALUES
+('John', 'Doe', '1234567890', 'johndoe@example.com'),
+('Jane', 'Doe', '2345678901', 'janedoe@example.com'),
+('Mark', 'Smith', '3456789012', 'marksmith@example.com'),
+('Sarah', 'Johnson', '4567890123', 'sarahjohnson@example.com'),
+('David', 'Wilson', '5678901234', 'davidwilson@example.com'),
+('Emily', 'Brown', '6789012345', 'emilybrown@example.com'),
+('Michael', 'Taylor', '7890123456', 'michaeltaylor@example.com'),
+('Laura', 'Anderson', '8901234567', 'lauraanderson@example.com'),
+('Kevin', 'Martin', '9012345678', 'kevinmartin@example.com'),
+('Jennifer', 'Lee', '0123456789', 'jenniferlee@example.com');
+
+INSERT INTO teacher_courses (teacher_id, course_id) VALUES
+(1, 1),
+(1, 3),
+(1, 2),
+(4, 4),
+(2, 5),
+(2, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10);
+
+
+#ex2 - ще изведем всички суденти, чиито ЕГН-та започват с 02
+SELECT * FROM students
+WHERE egn LIKE ("02%");
+        
+#ex3 - ще изведем id-то на учителя и броя на предметите, които преподава
+SELECT teacher_id, COUNT(course_id) 
+FROM teacher_courses
+GROUP BY teacher_id;
+
+#ex4 - ще изведем името, фамилията, фак. номер и сепциалността на студент
+SELECT students.first_name, students.family_name, students.fac_no, majors.name
+FROM students
+JOIN majors
+ON students.major_id = majors.id;
+
+#ex5 - ще изведем всички учтели и на кого те преподават дори ще изведем и тези учители, които все още не преподават на никого 
+SELECT concat(teachers.first_name," " ,teachers.family_name) as teacher,
+		concat(students.first_name, " " ,students.family_name) as student, 
+		students.fac_no
+FROM teachers
+LEFT JOIN teacher_courses
+ON teachers.id = teacher_courses.teacher_id
+LEFT jOIN courses
+ON courses.id = teacher_courses.id
+LEFT JOIN student_courses 
+ON student_courses.course_id = courses.id
+LEFT JOIN students 
+ON student_courses.student_id = students.id;
+	
+#ex6
+# Извеждаме всички студенти и които имат
+# като използваме вложен SELECT за да се свържем
+# директно с courses
+        
+SELECT students.first_name, students.family_name,
+		students.fac_no, courses.name
+FROM students
+JOIN courses
+ON courses.id IN (SELECT course_id
+				  FROM student_courses
+				  WHERE  student_courses.student_id = students.id);
+			
+            
+#ex7 - ще изведем броя на курсовете на всеки студент.
+SELECT concat(students.first_name, " " ,students.family_name) as student,
+		count(courses.id) as course_count
+FROM students
+JOIN student_courses
+ON students.id = student_courses.student_id
+JOIN courses
+ON student_courses.course_id = courses.id
+GROUP BY students.id
+ORDER BY course_count DESC
+LIMIT 5;
+
+#ex8
+# Ще направим trigger, който ще извежда грешка ако 
+# един студент се опита да запише повече 
+# oт една специалност по едно и също време
+# това означава, че един студент може да 
+# запише повече от един път само ако вече е завършил
+
+DROP TRIGGER IF EXISTS alidate_student_grade
+DELIMITER |
+CREATE TRIGGER validate_student_grade BEFORE INSERT ON student_courses
+FOR EACH ROW
+BEGIN
+DECLARE course_credits INT;
+DECLARE course_semester INT;
+DECLARE student_semester INT;
+DECLARE student_major_id INT;
+DECLARE student_major_type ENUM("BACHELOR'S", "MASTER'S", "DOCTOR's");
+DECLARE grade_value INT;
+
+SELECT courses.credits, semester
+INTO course_credits, course_semester
+FROM courses
+WHERE id = NEW.course_id;
+
+SELECT major_type, number_of_semesters
+INTO student_major_type, student_semester
+FROM majors
+WHERE id = (SELECT major_id FROM students WHERE id = NEW.student_id);
+
+IF grade_value IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid grade for the student major type.';
+END IF;
+
+IF grade_value < 3 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The minimum grade is 3.';
+END IF;
+
+IF grade_value > 6 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The maximum grade is 6.';
+END IF;
+
+IF course_semester > student_semester THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The student cannot take a course from a future semester.';
+END IF;
+
+IF (SELECT COUNT(*) FROM student_courses
+    WHERE student_id = NEW.student_id 
+    AND grade IS NOT NULL) >= student_major_id * 3 
+	THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The student has reached the maximum number of passed courses for the current major.';
+END IF;
+
+IF (SELECT SUM(courses.credits) 
+    FROM student_courses
+    JOIN courses ON student_courses.course_id = courses.id 
+    WHERE student_id = NEW.student_id 
+    AND grade IS NOT NULL) + course_credits > student_major_id * 30
+    THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'The student has reached the maximum number of credits for the current major.';
+END IF;
+
+IF course_semester > 
+    (SELECT number_of_semesters 
+	FROM majors WHERE id =
+    (SELECT major_id 
+     FROM students
+     WHERE id = NEW.student_id)) 
+    THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'The course semester cannot be greater than the total number of semesters for the current major.';
+END IF;
+
+END;
+|
+DELIMITER ;
+
+
+#ex9 - ще създадем процедура с курсор, в която ще пресмятаме кредитите на всеки студент, като всяка оценка е различен процент от максималните кредити, 
+#които ни дава предмета. Правим транзакция, в която ъпдейтваме полето student_credits от таблица student_courses, като му добавяме кредита, който сме 
+#получили за съответния студент.
+           
+DROP PROCEDURE IF EXISTS calculate_credits;
+DELIMITER |
+CREATE PROCEDURE calculate_credits ()
+BEGIN
+DECLARE temp_id INT;
+DECLARE temp_row_count INT;
+DECLARE temp_first_name VARCHAR(255);
+DECLARE temp_father_name VARCHAR(255);
+DECLARE temp_family_name VARCHAR(255);
+DECLARE temp_fac_no VARCHAR(255);
+DECLARE temp_grade ENUM ("2", "3","4", "5", "6");
+DECLARE temp_credits INT;
+DECLARE temp_max_credits INT;
+DECLARE temp_course_name VARCHAR(255);
+DECLARE finished BOOLEAN DEFAULT FALSE;
+
+DECLARE curs  CURSOR 
+FOR SELECT
+students.first_name, students.father_name,students.family_name,
+students.fac_no, courses.name,student_courses.grade, courses.max_credits
+FROM students
+JOIN student_courses
+ON students.id = student_courses.student_id
+JOIN courses
+ON courses.id = student_courses.course_id;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = TRUE;
+SET finished = FALSE;
+
+DROP TABLE IF EXISTS  temp_table;
+CREATE TEMPORARY TABLE temp_table(
+name VARCHAR (255),
+fac_no VARCHAR (10),
+course VARCHAR(255),
+grade ENUM ("2", "3", "4", "5", "6"),
+credits INT
+)ENGINE = Memory;
+
+OPEN curs;
+while_loop : WHILE ( finished = FALSE) 
+		DO 
+			FETCH curs INTO temp_first_name, temp_father_name,
+            temp_family_name,temp_fac_no, temp_course_name  ,temp_grade,temp_max_credits;
+		IF(finished = TRUE)
+			THEN 
+				LEAVE while_loop;
+		END IF;
+        IF(temp_grade = "2")
+			THEN 
+				SET temp_credits = temp_max_credits * 0;
+		ELSEIF(temp_grade = "3")
+			THEN
+				SET temp_credits = temp_max_credits * 0.25;
+		ELSEIF(temp_grade = "4")
+			THEN
+				SET temp_credits = temp_max_credits * 0.50;
+        ELSEIF(temp_grade = "5")
+			THEN
+				SET temp_credits = temp_max_credits * 0.75;
+		ELSEIF(temp_grade = "6")
+			THEN
+				SET temp_credits = temp_max_credits;
+		END IF;      
+        SET temp_id = (SELECT id 
+						FROM students
+                        WHERE students.fac_no = temp_fac_no);
+        START TRANSACTION;
+        UPDATE student_courses
+		SET student_courses.student_credits =temp_credits
+        WHERE student_courses.student_id = temp_id;
+        SET temp_row_count = ROW_COUNT();
+        IF(temp_row_count != 1)
+			THEN
+				SIGNAL SQLSTATE "45000"
+                SET MESSAGE_TEXT = "Something whent wrong";
+                ROLLBACK;
+			ELSE
+				COMMIT;
+        END IF;
+         INSERT INTO temp_table(name, fac_no, course ,grade, credits)
+         VALUES(CONCAT_WS(" ", temp_first_name, temp_father_name,  temp_family_name), 
+				temp_fac_no, temp_course_name ,temp_grade, temp_credits );
+	END WHILE;
+
+
+    SELECT * FROM temp_table;
+END
+ |
+DELIMITER ;
+CALL calculate_credits();
+
+select * from student_courses;
